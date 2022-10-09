@@ -1,0 +1,694 @@
+##############################################################################
+This file was generated using the command script a3.txt. It has been edited 
+to answer the questions. Answers are at the top, and the actual screen 
+capture is at the bottom of the file.
+
+Q1) Represent influence between users as a directional graph of users, 
+    save as a list of lines. 
+    Answer in file a3_1.tsv, uploaded
+    Commands used: 
+    grep 'replied_to' downloaded_tweets_extend_original_nolf2_nobot.tsv>a3_0.tsv
+    awk –F “\t” ‘{print $6 “\t” $2}’ a3_0.tsv > a3_1.tsv
+
+Q2) Produce clusters (groups of influence) by ranking the users who got replies 
+    by their number of replies. Keep only the largest clusters by "cutting" at
+    a threshold of 3
+    Answer in file a3_2.tsv, uploaded
+    Commands used:
+    awk '{print $1}' a3_1.tsv | sort | uniq -c | sort -nr |  awk '{if ($1 >= 3) {print}}' > a3_2_temp.txt
+    awk '{print $2}' a3_2_temp.txt > searchfile.txt
+    fgrep -f searchfile.txt a3_1.tsv > a3_2.tsv
+
+
+Q3) Plot the sizes of clusters as a histogram to show how many clusters of each
+    size resulted.
+    Plot in file histogram.png, uploaded
+
+
+Q4) Find the 30 most frequent hashtags in these largest clusters of replies you
+    kept.
+    For this problem, I grepped for all tweets that were replies, then extracted 
+    the replied_to and hashtag columns, then extracted only the replies 
+    corresponding to the clusters (3 or more replies) then converted to ascii, 
+    replaced , with new line, converted to lowercase and deleted blank lines 
+    before doing the sort and count.
+    Commands used:
+    grep 'replied_to' downloaded_tweets_extend_original_nolf2_nobot.tsv  | awk –F “\t” ‘{print $6 “\t” $4}’ > a3_4_a.tsv
+    fgrep -f searchfile.txt a3_4_a.tsv > a3_4_b.tsv
+    iconv -f utf-8 -t ascii//TRANSLIT a3_4_b.tsv > a4_a.tsv
+    awk –F “\t” ‘{print $2}’ a4_a.tsv > a4_a_2.txt
+    cat a4_a_2.txt | tr ',' '\n' > a4_b.txt
+    sed 's/\"//g' a4_b.txt > a4_c.txt
+    cat a4_c.txt | tr '[A-Z]' '[a-z]' > a4_d.txt
+    cat a4_d.txt | sed '/^$/d' > a4_e.txt
+    sort a4_e.txt | uniq –c | sort –nr > a3_4.tsv
+
+    30 most frequent hashtags for cluster of 3 or more replies
+     75 auspol
+     16 ukraine
+     15 longcovid
+     15 covid19
+     15 alboforpm
+     13 standwithukraine
+     12 gutlessscomo
+     11 ausvotes
+     11 ableg
+     10 covid
+      8 lnpcorruptionparty
+      8 johnsonoutday25
+      7 lnpdisgrace
+      7 ????????????
+      6 russia
+      6 covidisnotover
+      5 morrison
+      5 lauterbachbleibt
+      5 diemaskebleibtauf
+      5 brexit
+      5 bccrss
+      5 ausvotes2022
+      5 australia
+      4 wirwollenmaskenpflicht
+      4 votejoshout
+      4 votefordout2022
+      4 votebluetosaveamerica
+
+    It appears that most of these hashtags are not there in the 30 most frequent
+    hashtags from A2. For example, alboforPM, gutlessscomo, ausvotes, 
+    johnsonoutday25, inpdisgrace, covidisnotover, lnp, etc are in the list
+    for A3 but not in A2. 
+
+
+Script a3.txt screen capture follows.
+
+##############################################################################
+Script started on 2022-10-09 00:56:22-04:00
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ grep 'replied_to' downloaded_tweets_extend_original_nolf2_nobot.tsv > a3_0.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ more a3_0.tsv
+1074379984423215104	73452506	2018-12-16 19:05:23+00:00	"authoritarianism,FT"	[<ReferencedTweet id=1074359443498983424 ty
+pe=replied_to]	807095		"@nytimes “One of the first open hearings we’re going to have is on the rise of #authoritarianism around th
+e world,"" @RepAdamSchiff ""There is a global rise of autocracy that ought to concern every American. This is the new ideological struggle 
+that we’re in.” https://t.co/dHJYQHT17b #FT$"
+1117453001638207489	2147604445	2019-04-14 15:42:11+00:00	BorisJohnson	[<ReferencedTweet id=1117371973112225793 type=repli
+ed_to]	621533		@BBCPolitics LET ME REMIND EVERYONE. I was at a Party in the early 90’s  where #BorisJohnson came up to me making M
+onkey noises  and tried to hand me a Water Melon. If you think that’s he’s fit to be PM then you’re as much of a racist PIG as he is
+1121299490584113152	888042960549552129	2019-04-25 06:26:45+00:00	MelanieShaw	[<ReferencedTweet id=1120982666457829376 ty
+pe=replied_to]	209584092		"@DannyShawBBC It looks like, based on the responses, this may well be political bunkum.   However,
+ #MelanieShaw said she has experienced prison without hygiene resources. This was before she was denied a visit from her social worker. Is 
+that a general occurrence or special ‘treatment’ for Mel?"
+1129996316426342401	2748061373	2019-05-19 06:24:50+00:00	MelanieShaw	[<ReferencedTweet id=1129421674569490436 type=repli
+ed_to]	1066744429854236672		@HeleneG46816352 Thank you for retweeting. We have been working for many years to help get the lid 
+off child abuse and many people researching commenting bringing evidence forward &amp; challenging the State cover-up is very powerful. #Me
+lanieShaw has spent 24 months in solitary to try &amp; silence her
+1135151217439596544	872158753008877569	2019-06-02 11:48:34+00:00	"NHS,Brexit"	[<ReferencedTweet id=1135141940989693954 ty
+pe=replied_to]	722242009		@carolecadwalla Remember what John Major said in 2016. The #NHS is as safe in the hands of the #Bre
+xit at-all-costs as a hamster in a cage with a python https://t.co/jEYZdWW4KP
+1301086316956774404	2412223020	2020-09-02 09:15:25+00:00	auspol	[<ReferencedTweet id=1301059786184761344 type=replied_to]	8197942		"@SBSNews So, according to devoutly religious Tony Abbott...  In relation to abortion, life is sacred In relation to euthan
+asia, life is sacred In relation to the economy, cull the old  He's never been a profound or consistent thinker! Or, in fact, much of a thi
+nker at all. #auspol"
+[3m--More--(0%)[23m[Kkananya@sjsu:~/A3\[ananya@sjsu A3]$ awk '{print$6 $6[C[C "\t"r "\t"[1P "\t"[C[1P"\t"[C[C[C[C $2}' a3_0.tsv > a3_1.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ head a3_1.tsv
+[<ReferencedTweet	73452506
+[<ReferencedTweet	2147604445
+[<ReferencedTweet	888042960549552129
+[<ReferencedTweet	2748061373
+[<ReferencedTweet	872158753008877569
+[<ReferencedTweet	2412223020
+[<ReferencedTweet	3657013654
+[<ReferencedTweet	182663887
+[<ReferencedTweet	250691621
+[<ReferencedTweet	1317220261050056704
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ awk -F "\t" '{print$[K $6"\t" $2}' a3_0.tsv > a3_1.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ head a3_1.tsv
+807095	73452506
+621533	2147604445
+209584092	888042960549552129
+1066744429854236672	2748061373
+722242009	872158753008877569
+8197942	2412223020
+767788995962998784	3657013654
+1246440482760085504	182663887
+21722318	250691621
+380268462	1317220261050056704
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ awk '{print $1}' ae[K3_1.tsv | sort | uniq -c | sort -nr | awk '{if $1 >= 3}[K) {print}}' > a3_2_temp.txt
+awk: cmd. line:1: {if $1 >= 3) {print}}
+awk: cmd. line:1:     ^ syntax error
+awk: cmd. line:1: {if $1 >= 3) {print}}
+awk: cmd. line:1:            ^ syntax error
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ awk '{print $1}' a3_1.tsv | sort | uniq -c | sort -nr | awk '{if $1 >= 3) {print}}' > a3_2_temp.txt[1@([C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ awk '{print $2}' a3_2_temp.txt > searchfile.txt
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ fgrep -f searchfile.txt a3_1.tsv > a3_2.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ head a3_2_temmp[K[Kp.ts[Kxt
+     45 3453306553
+     27 29447428
+     14 1238370241169616897
+     13 1108565574
+     12 19739126
+     11 21525682
+     10 95091601
+     10 48624704
+     10 1462548977367359490
+      9 26217297
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ head a3_2.tsv
+722242009	872158753008877569
+27493883	3002029764
+94350709	29447428
+29447428	728273994
+76721925	1387010761994682371
+29447428	1387314750883831810
+798953701972938752	102162577
+29447428	1433489836162396166
+29447428	1247295628780208132
+1095523459877068800	194617157
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ awk '{print $1}' a3_2_temp.txt > a3_3.txt
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ head aa3[K[K3_3.txt
+45
+27
+14
+13
+12
+11
+10
+10
+10
+9
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ grep 'replied_to' downloaded_tweets_extend_original_nolf2_nobot.tsv | awk -F "\t" '{print $6 "\t[K[K[K[K"\t" $4}' > a3_4_a.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ fgrep -f searchfile.txt a3_4_a.tsv > a3_4_b.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ awk -F "\\t[K[Kt" '{print $2"[K}' ae[K3_4_b.tsv | sort | uniq -c | sort -nr > a3_4.txt
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ head a3_4.txt
+     36 auspol
+      8 AlboForPM
+      5 LongCovid
+      4 StandWithUkraine
+      4 COVID19
+      3 Ukraine
+      3 "UBI,auspol"
+      3 ScottytheFailure
+      3 MaskUp
+      3 LNPCorruptionParty
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ in[Kconv -f uif-8 -t asc[K[K[K[K[K[K[K[K[K[K[Ktf [K=8[K[K-8 -t ascii//TRANSLIT a3_4_b.tsv > a4_a.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ cat a4_a.tsv | tr ',''\n'[C '\n'[C[C[C[C > a4_b.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ sed 's/\"//g' a4_b.tsv > a4-[K_c.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ cat a4_c.tsv | tr '[A-Z]'][K '[a-z]' > a4_d.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ cat a4_d.tsv | sed '/^$/d' > a4_e.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ awk -F "\t" '{print $2}' a4_e.tsv | sort | uniq -c | sort -nr > a3_4.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ head a3_4.tsv
+    529 
+     46 auspol
+     11 longcovid
+     11 covid19
+     11 alboforpm
+      8 ableg
+      7 ukraine
+      7 covid
+      6 lnpcorruptionparty
+      6 ????????????
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ more a4_e.tsv
+722242009	nhs
+brexit
+27493883	thankyoujoe
+thankyoujoe
+thankyoujoe
+29447428	vitt
+29447428	boycottfaroeislands
+stopthegrind
+798953701972938752	thereishope
+votebluetosaveamerica
+29447428	stopthegrind
+29447428	happynewyear
+happynewyear2022
+1095523459877068800	????????????
+fluke_natouch
+1108565574	lemmmmmmrip
+auspol
+1238370241169616897	murdoch
+morrison
+joyce
+morrison
+joyce
+[3m--More--(1%)[23m[Kkananya@sjsu:~/A3\[ananya@sjsu A3]$ more a4_a.tsv
+722242009	"NHS,Brexit"
+27493883	"ThankYouJoe,ThankYouJoe,ThankYouJoe"
+29447428	VITT
+29447428	"BoycottFaroeIslands,StopTheGrind"
+798953701972938752	"ThereIsHope,VoteBlueToSaveAmerica"
+29447428	StopTheGrind
+29447428	"HappyNewYear,HAPPYNEWYEAR2022"
+1095523459877068800	"????????????,fluke_natouch"
+1108565574	"LeMMMMMMRip,auspol"
+1238370241169616897	"Murdoch,Morrison,Joyce,Morrison,Joyce"
+1096205507348623360	COVID19
+3453306553	"FecklessLumpScotty,LNPdisasters,LNPbunglers,Australia,auspol"
+139109800	LongCovid
+139109800	LongCovid
+977204844	ableg
+3453306553	"ClimateCrisis,DesignMatters"
+3453306553	"PoliticalDonations,CrookDevelopers,CrookedLNP,NSWInc,announceables,LNPliars,LNPCorruptionParty"
+225779417	"ScottyfromMarketing,RATs,vaccine,PM"
+926164634570067968	TFG
+926164634570067968	January6thInsurrection
+34116377	ScottyTheliar
+254515782	auspol
+[3m--More--(4%)[23m[K3246790436	"Domicron,typhoidmorrison"
+3453306553	auspol
+1238949674989416449	"Scomicron,Domicrom"
+178580925	"FredVanVleet,NBAAIIStar"
+178580925	"ZachLaVine,NBAAllStar"
+178580925	"WeTheNorth,FredVanvleet,NBAAllStar"
+178580925	"Big12,JaMorant,NBAALLSTAR"
+32871086	honorourrealheroes
+3288075858	auspol
+307755781	"lockdowns,pandemic"
+58974496	ScottytheFailure
+32871086	"RIPSidneyPoitier,RIPSirSidneyPoitier"
+255369151	ScottyDoesntGiveARats
+1108565574	AlboForPM
+467726691	MerrickGarland
+1096205507348623360	"VoteFordOut2022,VoteThemAllOut2022"
+1096205507348623360	NeverVoteConservative
+1108565574	abc730
+65357102	"FreeNazanin,FreeNazaninNow"
+3246790436	ScottytheFailure
+29447428	TripleJabbed
+29447428	veryconfused
+[3m--More--(7%)[23m1117704370630455296	LoveAt9Q18
+30844417	DontLookUp
+18831926	TreatLongCovid
+467726691	RealityWinner
+95091601	LNPCorruptionParty
+21525682	Ableg
+1108565574	"ScottyDoesntGiveARats,auspol"
+878284831	GOPSeditiousTraitors
+255812611	MitchMcConnell
+2227646515	FreeRats
+879147821915615233	"VoteBlueIn2022,TrumpCoupAttempt"
+14157134	Carrieantoinette
+86626845	LongCovid
+14281853	JohnsonOutToday
+3288075858	"MSM,Australia"
+48624704	"LNPDeathCult,AusPol2022,auspol,COVID19Aus,Union,LNPDisgrace"
+48624704	"auspol,actu"
+48624704	"Covid,ScottyDoesNothing,AustraliaHasFallen"
+48624704	"FreeRats,FreeN95,ScottyDoesntGiveARats,theDrum,TheProjectTV,today,sunrise"
+3246790436	"auspol,FreeTheRefugees,FreeThemAll"
+1080844782	"VotingRightsAct,VotingRightsNow,ThursdayThoughts,ThursdayMotivation"
+19739126	ShameOnRebuplicans
+[3m--More--(11%)[23m[K19739126	ShameOnMcCarthy
+15801906	ScotusStench
+18831926	"Viruses,death,Cancers,AutoimmuneConditions,EpsteinBarrVirus,MultipleSclerosis,brain,SpinalCord,COVID"
+255812611	"MerrickGarland,FireMerrickGarland"
+19084896	MerrickGarland
+1094971056358637568	"COVID19,Omicron,LongCovid,UnsafeSchools"
+41438148	"PetrolHeads,FillUpFriday"
+342863309	BetoForGovernor
+254515782	AlboForPM
+95091601	ScottytheFailure
+798953701972938752	BeAHeroForVotingRights
+798953701972938752	"VoterSuppression,BeAHeroForVotingRights,ONEV1,DemCastTX"
+926164634570067968	"DFG,BiggestLoser,TFG"
+926164634570067968	PutinsPuppet
+21525682	ableg
+63942152	"Resign,CallAnElection,VoteJoshOut,ticktockJosh"
+234694571	Bigot
+1073606435580325889	"BorisJohnsonOut,ToriesOut"
+34247411	PMQs
+29447428	RIP
+139109800	ChildTaxCredit
+48624704	CallTheElection
+[3m--More--(15%)[23m[K29447428	"Rave,WelshNationalChart,R5"
+15480566	"ME,LongCovid"
+29447428	NeverForgeMMMMMM
+19739126	KevinMcCarthyIsaThreatToAmericanDemocracy
+15480566	"LongCovid,MECFS"
+1108565574	auspol
+1108565574	"Morrison,VoteThemAllOut2022,livingwithcovid,living,LeMMMMMMRip"
+2768501	"Morrison,LeMMMMMMRip,livingwithcovid,WA,ThisisNotJournalism,LNPDeathCult"
+3453306553	MurdochGutterMedia
+2768501	auspol
+1080844782	SinemaEndsDemocracy
+728273994	StandTogether
+490002009	IntroductionLoveAt9
+1117704370630455296	IntroductionLoveAt9
+29447428	"Bruxelles,BRU2301,BRU2301,Polizeigewalt"
+63942152	"VoteJoshOut,KooyongVotes"
+938494109844729856	McQueenMonday
+29447428	"BorisJohnson,downingstreetparties"
+3303457302	"IHaveAPreexistingCondition,MultipleSclerosis,Immunosuppressed"
+3303457302	IHaveAPreexistingCondition
+3303457302	IHaveAPreexistingCondition
+3288075858	paulkeating
+[3m--More--(19%)[23m1471037967926018051	DajshaDoll
+878284831	"TakeOutSinema,NoMoreSIN"
+1073606435580325889	JohnsonOut
+22187085	BanCongressionalStock
+1237314642583658496	"Denmark,Omikron,Omicron,BA2,endemic,CovidElimination,NoCovid,ZeroCovid"
+19739126	"VotingRightsAct,USHistory"
+19739126	"VotingRights,USHistory"
+18831926	DeleteSpotify
+18831926	Denmark
+728273994	Rare
+728273994	NHSHeroes
+4118285112	WeTVxOhmFluke
+1098819491780153345	"WeTVxOhmFluke,609BedTimeStory"
+4118285112	"WeTVxOhmFluke,609BedtimeStory"
+15801906	Spotify
+3453306553	"Berejiklian,nswcovid"
+14247236	GetVaccinatedNow
+86626845	"COVID19,COVID19,COVID19,Influenza,COVID19"
+63942152	WorldsWorstTreasuer
+32871086	BidenDelivers
+2608740770	"tamepunk,IstandwithGrace"
+2227646515	LeMMMMMMRipDom
+[3m--More--(22%)[23m[K2227646515	LNPDeathCult
+2809959174	VoteFordOut2022
+2809959174	"FordFailedKids,FordFailedOntario"
+3453306553	"Auspol,FuhrerDutts,Election22,AnnihilateLNP"
+14157134	SueGrayReport
+14281853	"TorySOOOOOO,JohnsonOut7"
+1080844782	VotingRights
+1080844782	OnThisDay
+76842602	"JobSeeker,agedcare,NPC,auspol"
+19739126	"LockHimUp,KevinMcCarthyResign"
+1108565574	"Oz,taxpayer,warfare,schools,LNPDisgrace"
+1098819491780153345	"????????????,fluke_natouch"
+1268223690480615424	KochNetwork
+29447428	VITT
+3131144855	JohnsonOut9
+1280478731874848769	"Iowa,Republicans,IALegislature"
+19739126	KevinMcCarthyLowlif
+35787166	DoWeHaveAProblem
+19739126	McCarthyisAWeakMan
+145499533	gottaloveher
+1247612029	COVID19
+1247612029	Bidenboom
+[3m--More--(26%)[23m[K18831926	pfizer
+20995648	JohnsonOut11
+1237314642583658496	COVID19
+19739126	
+1247612029	BidenBoom
+1113341312	"AgedCare,HealthCare,ReligiousDiscriminationBill"
+1471037967926018051	DoWeHaveAProblem
+3453306553	ScottyTheCompletePsycho
+288277167	"MinimumWage,Wealth"
+2809959174	FordFailedOttawa
+19739126	
+26217297	JohnsonOut14
+1117704370630455296	?????????????????2021
+1117704370630455296	?????????????????2021
+35787166	bussin
+1189799454506799104	"LiberalCorruptionParty,Nationals"
+1189799454506799104	KilltheBill
+1189799454506799104	ReligiousDiscriminationBill
+66917778	auspol
+2809959174	"ONpoli,WhereIsDougFord"
+21525682	"abed,ableg"
+1096205507348623360	"FlutruxKlan,TinfoilOfTheMonth,bcpoli"
+[3m--More--(29%)[23m[K139109800	"LongCovid,TreatLongCovid"
+3303457302	MaskUp
+29447428	together
+1237314642583658496	"KeepMasks,Vaccinate"
+21525682	"Ableg,Abpoli"
+225779417	"CompletePsycho,ScottyTheCompletePsycho,ScottyTheCreep,ToxicScotty"
+14247236	BetoForTexas
+1094971056358637568	"NoWarWithRussia,NoWar"
+45379403	"NoWarWithRussia,NoWar"
+159021888	LNPCorruptionParty
+26217297	JohnsonOut19
+92932981	horriblehorribleperson
+92932981	"libertarian,FreeDumbery,auspol"
+92932981	"covid19,clivepalmer"
+926164634570067968	RealityWinner
+3453306553	auspol
+29447428	pfizer
+26217297	JohnsonOut20
+3453306553	auspol
+48624704	COVID
+48624704	LNPScareCampaign
+48624704	NDIS
+[3m--More--(32%)[23m[K342863309	BetoForTexas
+3453306553	"ScottyThePathologicalLiar,ScottyFromMarketing,60Mins,JennyFromQAnon,60minutes"
+145499533	MaryJBlige
+145499533	Legends
+2615581908	4corners
+21525682	ableg
+29447428	War
+26217297	"JohnsonOut22,ProtectNHS"
+19739126	"Insurrectionist,InsurrectionHasConsequences"
+95091601	"VoteJoshOut,auspoll"
+3453306553	auspol
+1098819491780153345	????????????
+26217297	"JohnsonOut_23,JohnsonOut_23,JohnsonOut_23"
+86626845	"MECFS,LongCovid"
+26217297	JohnsonOut_23
+30844417	ableism
+159021888	"UselessLNP,UselessPM,CallTheElectionFFFFFFhead"
+1387010761994682371	serco
+1238370241169616897	AbusiveAvi
+22187085	BoycottWalgreens
+1462548977367359490	"WeStandWithUkraine,Poland"
+878284831	BoycottWalgreens
+[3m--More--(35%)[23m[K2809959174	LTC
+1268223690480615424	"COVID19,GetBoosted"
+26217297	"JohnsonOutDay25,JohnsonOutDay25,JohnsonOutDay25,JohnsonOutDay25,JohnsonOutDay25,JohnsonOutDay25"
+467726691	Covid
+2768501	"TrillionDollarScotty,ScottytheFailure"
+26217297	"JohnsonOutDay25,JohnsonOutDay_25,JohnsonOut25,JohnsonOutDay25,JohnsonOutDay_25,JohnsonOut25"
+93880122	JohnsonOut26
+26217297	JohnsonOut26
+29447428	"Torquay,EnglishRiviera,Devon,UK"
+30844417	"Covid19,LongCovid"
+1108565574	insiders
+21525682	ResignKenney
+3453306553	auspol
+1238583088998830081	Mongol
+3453306553	FFFFFFhead
+368240745	"JohnsonOut27,SackBorisJohnson"
+20052899	COVID
+14247236	"TheThingsWeDoForLove,CovidIsNotOver"
+2809959174	"DoNothingDoug,VoteFordOut2022"
+29447428	organic
+1387010761994682371	"LEGAL,SATANIC,LegalDeathCult,10commandments,KJV,GOD,IDsILLEGAL,BCCRSS,TruthBillboards,LegalNameFraud"
+1095523459877068800	"????????????,????????????????????"
+[3m--More--(40%)[23m1095523459877068800	"UWMAseries,????????????,????????????????????"
+41438148	TailpipeTuesday
+65357102	RussiaReport
+65357102	ditchtheProtocol
+48624704	auspol
+15480566	longcovid
+34247411	RussiaReport
+234694571	"ToriesUnfitToGovern,JohnsonOut30"
+29447428	NewHusband
+843433646962999296	GOPTraitorsToDemocracy
+1005846500583321601	Tuckyorose
+3131144855	ToryRussianMoney
+467726691	TrumpIsGuilty
+19084896	?epublicanTraitors
+2227646515	"LNPCorruptionParty,LNPDisgrace"
+870629200348274688	GoldsteinVotes
+4118285112	609BedtimeStory
+1005846500583321601	"Russian,Moscow"
+2885493519	WeThePeople
+2885493519	IStandWithUkraine
+2885493519	"StopRussianAggression,StopRussianInvasion,StandWithUkraine"
+2885493519	StandWithUkraine
+[3m--More--(43%)[23m1005846500583321601	IStandWithUkraine
+76842602	auspol
+1094971056358637568	MeToo
+2608740770	"AlboForPM,LNPCrimeFamily"
+1120633726478823425	NYC
+3383159573	Ukraine
+368240745	StandWithUkraine
+1120633726478823425	"zelensky,kiew,ukraine"
+3453306553	auspol
+1120633726478823425	"UkraineRussiaWar,Russia,Ukraine"
+1120633726478823425	Ukraine
+1120633726478823425	"Tbilisi,Georgia,Ukraine"
+342863309	BetoForTexas
+1120633726478823425	Zelensky
+15801906	SeizeChelsea
+1113341312	auspol
+1462548977367359490	slavaUkranie
+1238583088998830081	"WeStandWithUkraine,StopRussia,StopWar,StopPutin"
+2885493519	"Kiev,Ukraina,Russia"
+1462548977367359490	StandWithUkraine
+20559705	AlboForPM
+20559705	"LNPfail,LNPDisgrace"
+[3m--More--(46%)[23m[K15801906	DemVoice1
+3453306553	"ScottMorrison,ScottyFromPhotoOps,gerryharvey,Albo4PM,AusPol2022,Murdoch,MorrisonFail,morrisonfailure"
+18831926	StandWithUkraine
+1238583088998830081	"Ukraine,RussianOilAndGas,ShutdownPutin,CleanEnergy,ShutdownOligarchs,RussianMilitary"
+878284831	"Putin,IStandWithUkriane"
+2885493519	UkraineStrong
+1387010761994682371	"BCCRSS,YourCrossToBear"
+1387010761994682371	BCCRSS
+163018653	StandWithUkriane
+21525682	Ableg
+19084896	GOPtheRussianParty
+20995648	"Brexit,EU,Ukraine"
+707967655031005186	corrupt
+262219168	"Russia,Ukraine,Russianforces"
+22187085	"Ukraine,IStandWithUkriane,TheView"
+3383159573	"Brexit,ToriesOutNow"
+1280478731874848769	"ValNotMarco,ValDemings,Florida"
+14247236	GQP
+1238583088998830081	"PutinsWar,RussiaInvadedUkraine"
+15801906	SeizeTheYachts
+1280478731874848769	BidenStrong
+793331593	AlboForPM
+[3m--More--(50%)[23m1098819491780153345	"????????????,Fluke_Natouch"
+793331593	"VoteJoshOut,kooyongvotes,Kooyong,LNPCorruptionParty"
+938494109844729856	ThrowbackThursday
+793331593	Mon4Kooyong
+19739126	"TrumpCoupAttempt,RepublicansAreTraitors"
+368240745	UkraineCrisis
+48624704	AlboForPM
+262219168	"NoFlyZoneOverUkraine,ClosetheSkyoverUkraine,StandWithUkraine,StopPutinNOW"
+1073606435580325889	"private,depop"
+76842602	"ScottMorrison,AlexHawke"
+1120633726478823425	"Ukrainian,StandWithUkraine"
+3453306553	Crumbmaiden
+3453306553	"UBI,auspol"
+3453306553	"UBI,auspol"
+3453306553	auspol
+3453306553	"UBI,auspol"
+3453306553	auspol
+3453306553	auspol
+1462548977367359490	StandWithUkraine
+27493883	ImpeachmentOne
+1387010761994682371	"UkraineUnderAtta?k,UkraineWar,UkraineRussianWar,Ukriane"
+32871086	FreeShipment
+[3m--More--(54%)[23m[K3453306553	bnefloods
+711608180535640064	JohnsonOut42
+711608180535640064	SueGray
+1471037967926018051	"NeoNazi,Ukraine"
+711608180535640064	"PartyGate,SueGrey"
+3453306553	"Dutton,LNPDystopianHellscape,Auspol,LNPfail,AnnihilateLNP,VoteLNPLast,Election2022,AuspolSoCorrupt"
+20559705	"LNPfail,auspol,Australia"
+3453306553	"Forgery,LNPCabinet,AngusGate,LNPBingoChart,AuspolSoCorrupt,Election22,AnnihilateLNPcrooks"
+3453306553	auspol
+342863309	HD108
+711608180535640064	JohnsonOut43
+2809959174	VoteFordOut2022
+1462548977367359490	"Zelensky,Ukraine"
+2809959174	"RepealBill124,onpoli,healthcare,nursing"
+1005846500583321601	"SlavaUkraini,BeFierce"
+58974496	FriendlyJordies
+1098819491780153345	"????????????,Fluke_Natouch,LoveAt9Q22"
+1238949674989416449	COVIDisAirborne
+7587032	UkraineRefugees
+20052899	"LongCovid,ResearchLongCovid"
+1280478731874848769	Resistance
+722242009	Brexit
+[3m--More--(58%)[23m[K20052899	GetMaskedNow
+65357102	Ukraine
+86626845	"COVID19,CovidIsNotOver"
+1462548977367359490	"Russia,Europe,Russian"
+1462548977367359490	"UnitedWithUkraine,StopPutin,LigaDeGuerreros"
+843433646962999296	"TuckerCarlsonRussianRRRRRRet,DemVoice1"
+86626845	Covid
+45379403	CostOfLivingCrisis
+262219168	"Donetsk,Donetsk"
+1108565574	ScottyDoesNothing
+1238370241169616897	auspol
+22187085	FreshVoicesRise
+878284831	CandyNo
+163018653	SlavaUkraine
+262219168	Ukrainian
+18831926	"BA2,COVID19,ZeroCovid"
+3453306553	"LNPCorruptionParty,Neocon"
+3453306553	"LNPmaladministration,auspol,FedICAC"
+722242009	"truth,JohnsonOut52,ToriesInPutinsPocket,ToriesOut,RussiaWarCrimes,Oligarchs"
+1471037967926018051	BritneySpears
+45379403	"Hitler,Bolshevik,SovietUnion"
+977204844	COVID19AB
+[3m--More--(62%)[23m[Kkananya@sjsu:~/A3\[ananya@sjsu A3]$ awk -F "\t" '{print $2}' a4_a_2.txt
+awk: fatal: cannot open file `a4_a_2.txt' for reading (No such file or directory)
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ history | tail
+ 1019  cat a4_a.tsv | tr ',' '\n' > a4_b.tsv
+ 1020  sed 's/\"//g' a4_b.tsv > a4_c.tsv
+ 1021  cat a4_c.tsv | tr '[A-Z]' '[a-z]' > a4_d.tsv
+ 1022  cat a4_d.tsv | sed '/^$/d' > a4_e.tsv
+ 1023  awk -F "\t" '{print $2}' a4_e.tsv | sort | uniq -c | sort -nr > a3_4.tsv
+ 1024  head a3_4.tsv
+ 1025  more a4_e.tsv
+ 1026  more a4_a.tsv
+ 1027  awk -F "\t" '{print $2}' a4_a_2.txt
+ 1028  history | tail
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ history | tail -20
+ 1010  head a3_2_temp.txt
+ 1011  head a3_2.tsv
+ 1012  awk '{print $1}' a3_2_temp.txt > a3_3.txt
+ 1013  head a3_3.txt
+ 1014  grep 'replied_to' downloaded_tweets_extend_original_nolf2_nobot.tsv | awk -F "\t" '{print $6"\t" $4}' > a3_4_a.tsv
+ 1015  fgrep -f searchfile.txt a3_4_a.tsv > a3_4_b.tsv
+ 1016  awk -F "\t" '{print $2}' a3_4_b.tsv | sort | uniq -c | sort -nr > a3_4.txt
+ 1017  head a3_4.txt
+ 1018  iconv -f utf-8 -t ascii//TRANSLIT a3_4_b.tsv > a4_a.tsv
+ 1019  cat a4_a.tsv | tr ',' '\n' > a4_b.tsv
+ 1020  sed 's/\"//g' a4_b.tsv > a4_c.tsv
+ 1021  cat a4_c.tsv | tr '[A-Z]' '[a-z]' > a4_d.tsv
+ 1022  cat a4_d.tsv | sed '/^$/d' > a4_e.tsv
+ 1023  awk -F "\t" '{print $2}' a4_e.tsv | sort | uniq -c | sort -nr > a3_4.tsv
+ 1024  head a3_4.tsv
+ 1025  more a4_e.tsv
+ 1026  more a4_a.tsv
+ 1027  awk -F "\t" '{print $2}' a4_a_2.txt
+ 1028  history | tail
+ 1029  history | tail -20
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ awk -F '[K"\t" '{print $2}' a4_a.tsv > a4_a_2.txt
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ cat a4_a_2.txt | tr ',' '\n' > a4_b.txt
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ ca[K[Ksed 's/\"//g' a4_b.txt > a4_c.txt
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ cat a4_c.txt | tr '[A-Z}[K]''[a-z]' > a4_d.txt
+tr: missing operand after ‘[A-Z][a-z]’
+Two strings must be given when translating.
+Try 'tr --help' for more information.
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ cat a4_c.txt | tr '[A-Z]''[a-z]' > a4_d.txt[C[C[C[1@ [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ cat a4_d.txt | sed '/^$/d' > a4_e.txt
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ sort a4_e.txt | uniq -c | sort -nr > a3_4.tsv
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ head a3_4.tsv
+     75 auspol
+     16 ukraine
+     15 longcovid
+     15 covid19
+     15 alboforpm
+     13 standwithukraine
+     12 gutlessscomo
+     11 ausvotes
+     11 ableg
+     10 covid
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ vi a3_4.tx[Ksv[K[ananya@sjsu A3]$ vi a3_4.tsv
+[?1049h[?1h=[1;34r[23m[24m[0m[H[J[?25l[34;1H"a3_4.tsv" 677L, 13837C[1;6H75 auspol[2;6H16 ukraine[3;6H15 longcovid[4;6H15 covid19[5;6H15 alboforpm[6;6H13 standwithukraine[7;6H12 gutlessscomo[8;6H11 ausvotes[9;6H11 ableg[10;6H10 covid[11;7H8 lnpcorruptionparty[12;7H8 johnsonoutday25[13;7H7 lnpdisgrace[14;7H7 ????????????[15;7H6 russia[16;7H6 covidisnotover[17;7H5 morrison[18;7H5 lauterbachbleibt[19;7H5 diemaskebleibtauf[20;7H5 brexit[21;7H5 bccrss[22;7H5 ausvotes2022[23;7H5 australia[24;7H4 wirwollenmaskenpflicht[25;7H4 votejoshout[26;7H4 votefordout2022[27;7H4 votebluetosaveamerica[28;7H4 scottythefailure[29;7H4 lnp[30;7H4 lemmmmmmrip[31;7H4 johnsonout_23[32;7H4 fluke_natouch[33;7H3 zelensky[34;122H1,1[11CTop[1;1H[34h[?25h[?25l[34;112H:[1;1H[34;1H[K[34;1H:[34h[?25hs[?25l[34h[?25he[?25l[34h[?25ht[?25l[34h[?25h[?25l [34h[?25hn[?25l[34h[?25hu[?25l[34h[?25h[?25l[1;5H[33m  1 [0m     75 auspol
+[33m  2 [0m     16 ukraine
+[33m  3 [0m     15 longcovid
+[33m  4 [0m     15 covid19
+[33m  5 [0m     15 alboforpm
+[33m  6 [0m     13 standwithukraine
+[33m  7 [0m     12 gutlessscomo
+[33m  8 [0m     11 ausvotes
+[33m  9 [0m     11 ableg
+[33m 10 [0m     10 covid
+[33m 11 [0m      8 lnpcorruptionparty
+[33m 12 [0m      8 johnsonoutday25
+[33m 13 [0m      7 lnpdisgrace
+[33m 14 [0m      7 [8C????
+[33m 15 [0m      6 russia
+[33m 16 [0m      6 covidisnotover
+[33m 17 [0m      5 morrison
+[33m 18 [0m      5 lauterbachbleibt
+[33m 19 [0m      5 diemaskebleibtauf
+[33m 20 [0m      5 brexit
+[33m 21 [0m      5 bccrss
+[33m 22 [0m      5 ausvotes2022
+[33m 23 [0m      5 australia
+[33m 24 [0m      4 wirwollenmaskenpflicht
+[33m 25 [0m      4 votejoshout
+[33m 26 [0m      4 votefordout2022
+[33m 27 [0m      4 votebluetosaveamerica
+[33m 28 [0m      4 scottythefailure
+[33m 29 [0m      4 lnp
+[33m 30 [0m      4 lemmmmmmrip
+[33m 31 [0m      4 johnsonout_23
+[33m 32 [0m      4 fluke_natouch
+[33m 33 [0m      3 zelensky[34;122H1,1[11CTop[1;5H[34h[?25h[?25l[34;112H:[1;5H[34;1H[K[34;1H:[34h[?25hs[?25l[34h[?25he[?25l[34h[?25ht[?25l[34h[?25h[?25l [34h[?25hn[?25l[34h[?25ho[?25l[34h[?25hn[?25l[34h[?25hu[?25l[34h[?25h[?25l[1;1H     75 auspol[1;15H[K[2;1H     16 ukraine[2;16H[K[3;1H     15 longcovid[3;18H[K[4;1H     15 covid19[4;16H[K[5;1H     15 alboforpm[5;18H[K[6;1H     13 standwithukraine[6;25H[K[7;1H     12 gutlessscomo[7;21H[K[8;1H     11 ausvotes[8;17H[K[9;1H     11 ableg[9;14H[K[10;1H     10 covid[10;14H[K[11;1H      8 lnpcorruptionparty[11;27H[K[12;1H      8 johnsonoutday25[12;24H[K[13;1H      7 lnpdisgrace[13;20H[K[14;1H      7 ????[14;21H[K[15;1H      6 russia[15;15H[K[16;1H      6 covidisnotover[16;23H[K[17;1H      5 morrison[17;17H[K[18;1H      5 lauterbachbleibt[18;25H[K[19;1H      5 diemaskebleibtauf[19;26H[K[20;1H      5 brexit[20;15H[K[21;1H      5 bccrss[21;15H[K[22;1H      5 ausvotes2022[22;21H[K[23;1H      5 australia[23;18H[K[24;1H      4 wirwollenmaskenpflicht[24;31H[K[25;1H      4 votejoshout[25;20H[K[26;1H      4 votefordout2022[26;24H[K[27;1H      4 votebluetosaveamerica[27;30H[K[28;1H      4 scottythefailure[28;25H[K[29;1H      4 lnp[29;13H[K[30;1H      4 lemmmmmmrip[30;20H[K[31;1H      4 johnsonout_23[31;22H[K[32;1H      4 fluke_natouch[32;22H[K[33;1H      3 zelensky[33;17H[K[34;122H1,1[11CTop[1;1H[34h[?25h[?25l[34;112H:[1;1H[34;1H[K[34;1H:[34h[?25hq[?25l[34h[?25h[?25l[34;1H[K[34;1H[?1l>[34h[?25h[?1049lkananya@sjsu:~/A3\[ananya@sjsu A3]$ history > cmds.log
+kananya@sjsu:~/A3\[ananya@sjsu A3]$ exit
+
+Script done on 2022-10-09 01:35:20-04:00

@@ -1,0 +1,48 @@
+  992  cd A3
+  993  awk -F "\t"'($2 != $6){print $0}' downloaded_tweets_extend_original_nolf2.tsv > downloaded_tweets_extend_original_nolf2_nobot.tsv
+  994  ls
+  995  awk -F "\t" '($2!=$6){print $0}' downloaded_tweets_extend_original_nolf2.tsv > downloaded_tweets_extend_original_nolf2_nobot.tsv 
+  996  awk -F "\t" '($2!=$6){print $0}' downloaded_tweets_extend_nolf2.tsv > downloaded_tweets_extend_nolf2_nobot.tsv
+  997  grep 'replied_to' downloaded_tweets_extend_original_nolf2_nobot.tsv > a3_0.tsv
+  998  awk '{print $6"\t" $2}' a3_0.tsv > a3_1.tsv
+  999  head a3_1.tsv
+ 1000  grep 'replied_to' downloaded_tweets_extend_original_nolf2_nobot.tsv > a3_0.tsv
+ 1001  more a3_0.tsv
+ 1002  awk '{print $6"\t" $2}' a3_0.tsv > a3_1.tsv
+ 1003  head a3_1.tsv
+ 1004  awk -F "\t" '{print $6"\t" $2}' a3_0.tsv > a3_1.tsv
+ 1005  head a3_1.tsv
+ 1006  awk '{print $1}' a3_1.tsv | sort | uniq -c | sort -nr | awk '{if $1 >= 3) {print}}' > a3_2_temp.txt
+ 1007  awk '{print $1}' a3_1.tsv | sort | uniq -c | sort -nr | awk '{if ($1 >= 3) {print}}' > a3_2_temp.txt
+ 1008  awk '{print $2}' a3_2_temp.txt > searchfile.txt
+ 1009  fgrep -f searchfile.txt a3_1.tsv > a3_2.tsv
+ 1010  head a3_2_temp.txt
+ 1011  head a3_2.tsv
+ 1012  awk '{print $1}' a3_2_temp.txt > a3_3.txt
+ 1013  head a3_3.txt
+ 1014  grep 'replied_to' downloaded_tweets_extend_original_nolf2_nobot.tsv | awk -F "\t" '{print $6"\t" $4}' > a3_4_a.tsv
+ 1015  fgrep -f searchfile.txt a3_4_a.tsv > a3_4_b.tsv
+ 1016  awk -F "\t" '{print $2}' a3_4_b.tsv | sort | uniq -c | sort -nr > a3_4.txt
+ 1017  head a3_4.txt
+ 1018  iconv -f utf-8 -t ascii//TRANSLIT a3_4_b.tsv > a4_a.tsv
+ 1019  cat a4_a.tsv | tr ',' '\n' > a4_b.tsv
+ 1020  sed 's/\"//g' a4_b.tsv > a4_c.tsv
+ 1021  cat a4_c.tsv | tr '[A-Z]' '[a-z]' > a4_d.tsv
+ 1022  cat a4_d.tsv | sed '/^$/d' > a4_e.tsv
+ 1023  awk -F "\t" '{print $2}' a4_e.tsv | sort | uniq -c | sort -nr > a3_4.tsv
+ 1024  head a3_4.tsv
+ 1025  more a4_e.tsv
+ 1026  more a4_a.tsv
+ 1027  awk -F "\t" '{print $2}' a4_a_2.txt
+ 1028  history | tail
+ 1029  history | tail -20
+ 1030  awk -F "\t" '{print $2}' a4_a.tsv > a4_a_2.txt
+ 1031  cat a4_a_2.txt | tr ',' '\n' > a4_b.txt
+ 1032  sed 's/\"//g' a4_b.txt > a4_c.txt
+ 1033  cat a4_c.txt | tr '[A-Z]''[a-z]' > a4_d.txt
+ 1034  cat a4_c.txt | tr '[A-Z]' '[a-z]' > a4_d.txt
+ 1035  cat a4_d.txt | sed '/^$/d' > a4_e.txt
+ 1036  sort a4_e.txt | uniq -c | sort -nr > a3_4.tsv
+ 1037  head a3_4.tsv
+ 1038  vi a3_4.tsv
+ 1039  history > cmds.log
